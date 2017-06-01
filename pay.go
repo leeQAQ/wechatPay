@@ -157,7 +157,7 @@ func (this *PayController) JsApiPayCallBack() {
 
 // @Summary 扫码充值
 // @Description  带*参数必传
-func (this *PayController) WxNative() {
+func (this *PayController) NativePay() {
 	//请求UnifiedOrder的代码
 	var yourReq UnifyOrderReq
 	yourReq.Appid = AppId //微信开放平台我们创建出来的app的app id
@@ -221,7 +221,7 @@ func (this *PayController) WxNative() {
 }
 
 // @Summary 扫码支付回调
-func (this *PayController) WxpayCallback() {
+func (this *PayController) NativeCallback() {
 	w := this.Ctx.ResponseWriter
 	r := this.Ctx.Request
 	// body
