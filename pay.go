@@ -10,13 +10,8 @@ import (
 	"strings"
 	"time"
 
-	"crypto/tls"
-
 	"crypto/md5"
-	"crypto/sha1"
-	"crypto/x509"
 	"encoding/hex"
-	"io"
 	"sort"
 
 	"github.com/astaxie/beego"
@@ -288,13 +283,6 @@ func (this *PayController) NativeCallback() {
 	fmt.Fprint(w, strResp)
 }
 
-const (
-	TRANSFERURL    = "https://api.mch.weixin.qq.com/mmpaymkttransfers/promotion/transfers"
-	WECHATCERTPATH = "/usr/cert/apiclient_cert.pem" //客户端证书存放绝对路径
-	WECHATKEYPATH  = "/usr/cert/apiclient_key.pem"  //客户端私匙存放绝对路径
-	WECHATCAPATH   = "/usr/cert/rootca.pem"         //服务端证书存放绝对路径
-)
-
 //首先定义一个UnifyOrderReq用于填入我们要传入的参数。
 type UnifyOrderReq struct {
 	Appid            string `xml:"appid"`
@@ -442,53 +430,4 @@ func CheckMsgSign(xmlStr string, key string) (bool, *Element) {
 		return true, el
 	}
 	return false, nil
-}
-
-var _tlsConfig *tls.Config
-
-func getTLSConfig() (*tls.Config, error) {
-	if _tlsConfig != nil {
-		return _tlsConfig, nil
-	}
-
-	// load cert
-	cert, err := tls.LoadX509KeyPair(WECHATCERTPATH, WECHATKEYPATH)
-	if err != nil {
-		return nil, err
-	}
-
-	// load root ca
-	caData, err := ioutil.ReadFile(WECHATCAPATH)
-	if err != nil {
-		return nil, err
-	}
-	pool := x509.NewCertPool()
-	pool.AppendCertsFromPEM(caData)
-
-	_tlsConfig = &tls.Config{
-		Certificates: []tls.Certificate{cert},
-		RootCAs:      pool,
-	}
-	return _tlsConfig, nil
-}
-
-func SecurePost(url string, xmlContent []byte) (*http.Response, error) {
-	tlsConfig, err := getTLSConfig()
-	if err != nil {
-		return nil, err
-	}
-
-	tr := &http.Transport{TLSClientConfig: tlsConfig}
-	client := &http.Client{Transport: tr}
-
-	return client.Post(
-		url,
-		"text/xml",
-		bytes.NewBuffer(xmlContent))
-}
-
-func str2sha1(data string) string {
-	t := sha1.New()
-	io.WriteString(t, data)
-	return fmt.Sprintf("%x", t.Sum(nil))
 }
