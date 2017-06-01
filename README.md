@@ -2,13 +2,19 @@
 微信支付
 
 配置自己的支付参数
-var AppId = ""          //公众号appid
-var AppSecret = ""      //公众号秘钥
-var MerId = ""          //商户号
-var PayKey = ""         //商户秘钥
-var NotifyUrl = ""      //公众号支付回调
-var SpbillCreateIp = "" //发起请求的机器ip
-var NativeUrl = ""      //扫码支付回调
+AppId = ""          //公众号appid
+
+AppSecret = ""      //公众号秘钥
+
+MerId = ""          //商户号
+
+PayKey = ""         //商户秘钥
+
+NotifyUrl = ""      //公众号支付回调
+
+SpbillCreateIp = "" //发起请求的机器ip
+
+NativeUrl = ""      //扫码支付回调
 
 
 JsApiPay 获取公众号支付信息（生成预支付订单）
